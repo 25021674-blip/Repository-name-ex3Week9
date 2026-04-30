@@ -2,42 +2,29 @@ name: Maven CI
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [ "main" ]
 
   pull_request:
-    branches:
-      - main
-      - master
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-          cache: maven
 
-      - name: Build project with Maven
+      - name: Build with Maven
         run: mvn clean package
 
-      - name: Verify JAR file
-        run: |
-          echo "Checking target folder..."
-          ls -la target
-          echo "Checking JAR file..."
-          test -n "$(find target -name '*.jar')"
-
-      - name: Upload JAR artifact
+      - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
-          name: maven-jar-artifact
+          name: jar-file
           path: target/*.jar
